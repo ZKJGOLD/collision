@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #box div{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 100%;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+<script>
+    var aDiv = document.getElementById("box").getElementsByTagName("div");
+    var length = aDiv.length;
+    var MaxX,MaxY;
+    var w=100;
+    var h=100;
+    for(var i=0;i<length;i++){
+       var obj = aDiv[i];
+        rColor(obj);
+        obj.Vx = rV();
+        obj.Vy = rV();
+    }
+    //获取运动边界
+    getMax();
+    window.onresize = getMax;
+    function getMax(){
+        MaxX = window.innerWidth-w;
+        MaxY = window.innerHeight-h;
+    }
+    //运动
+    (function m(){
+        for(var i=0;i<length;i++){
+            var dom = aDiv[i];
+            var left = dom.offsetLeft + dom.Vx;
+            var top = dom.offsetTop + dom.Vy;
+            if(left <= 0 || left >= MaxX){
+                if(dom.Vx>0){
+                    dom.Vx=-rV();
+                }else{
+                    dom.Vx=rV();
+                }
+                left = Math.max(left,0);
+                left = Math.min(left,MaxX);
+                rColor(dom);
+            }
+            if(top <= 0 || top >= MaxY){
+                if(dom.Vy>0){
+                    dom.Vy=-rV();
+                }else{
+                    dom.Vy=rV();
+                }
+                top = Math.max(top,0);
+                top = Math.min(top,MaxY);
+                rColor(dom);
+            }
+            dom.style.left = left + "px";
+            dom.style.top = top + "px";
+        }
+        requestAnimationFrame(m);
+    })();
+
+    //速度随机
+    function rV(){
+        return Math.random()*10+3;
+    }
+    //颜色随机
+    function rColor(dom){
+        var r = Math.floor(Math.random()*256);
+        var g = Math.floor(Math.random()*256);
+        var b = Math.floor(Math.random()*256);
+//        var rgb = "rgb("+r+","+g+","+b+")";
+        var rgb = `rgb(${r},${g},${b})`;
+        dom.style.background = "radial-gradient(circle,#fff,"+rgb+")";
+    }
+
+</script>
+</body>
+</html>
